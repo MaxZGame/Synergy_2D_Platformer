@@ -4,6 +4,11 @@ public class TakeItem : MonoBehaviour
 {
     private GameObject player;
     private PlayerInfo playerInfo;
+    private bool isBonusActive = false;
+    public bool IsBonusActive
+    {
+        get {  return isBonusActive; }
+    }
 
     private void Start()
     {
@@ -41,10 +46,11 @@ public class TakeItem : MonoBehaviour
         {
             if (collision.CompareTag("Player"))
             {
-                Destroy(this.gameObject);
+                this.gameObject.SetActive (false);
                 if (playerInfo != null)
                 {
                     playerInfo.ForceJump *= playerInfo.BonusForceJump;
+                    isBonusActive = true;
                     Debug.Log("Бонус прыжка активирован");
                 }
             }
