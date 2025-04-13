@@ -21,14 +21,24 @@ public class MoveController : MonoBehaviour
         set { isGrounded = value; }
     }
 
-    /// <summary>
-    /// Для проверки нажатия прыжка
-    /// </summary>
-    private bool isJumping = false;
-    public bool IsJumping
+    //Ставим флаги на направление движения или стоячее положение
+    private bool isMoveLeft = false;
+    public bool IsMoveLeft
     {
-        get { return isJumping; }
-        set { isJumping = value; }
+        get { return isMoveLeft; }
+        set { isMoveLeft = value; }
+    }
+    private bool isMoveRight = false;
+    public bool IsMoveRight
+    {
+        get { return isMoveRight; }
+        set { isMoveRight = value; }
+    }
+    private bool isMoveIdle = true;
+    public bool IsMoveIdle
+    {
+        get { return isMoveIdle; }
+        set { isMoveIdle = value; }
     }
 
     private void Start()
@@ -49,7 +59,6 @@ public class MoveController : MonoBehaviour
         if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
             isGrounded = true;
-            isJumping = false;
         }
     }
 
@@ -63,10 +72,31 @@ public class MoveController : MonoBehaviour
 
     private void LeftAndRightMove()
     {
+        MoveX = 1f;
         if (rb != null && playerInfo != null)
         {
-            MoveX = Input.GetAxis("Horizontal");
-            rb.linearVelocity = new Vector2(moveX * playerInfo.MoveSpeed, rb.linearVelocity.y);
+            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+            {
+                rb.linearVelocity = new Vector2(-MoveX * playerInfo.MoveSpeed, rb.linearVelocity.y);
+                isMoveLeft = true;
+                isMoveRight = false;
+                isMoveIdle = false;
+            }
+            else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+            {
+                rb.linearVelocity = new Vector2(MoveX * playerInfo.MoveSpeed, rb.linearVelocity.y);
+                isMoveLeft = false;
+                isMoveRight = true;
+                isMoveIdle = false;
+            }
+            else
+            {
+                rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+                isMoveLeft = false;
+                isMoveRight = false;
+                isMoveIdle = true;
+                Debug.Log("Персонаж остановился");
+            }
         }
     }
 
@@ -75,8 +105,8 @@ public class MoveController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded == true)
         {
             rb.AddForce(new Vector2(0, playerInfo.ForceJump), ForceMode2D.Impulse);
-            IsJumping = true;
         }
+
     }
 
     private void Errors()

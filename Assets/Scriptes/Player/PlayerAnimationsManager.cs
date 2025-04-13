@@ -6,6 +6,9 @@ public class PlayerAnimationsManager : MonoBehaviour
     [SerializeField]
     private MoveController moveController;
 
+    [SerializeField]
+    private GameObject[] particlePodoshva = new GameObject[2];
+
     private void Start()
     {
         animator = GetComponent<Animator>();
@@ -14,6 +17,7 @@ public class PlayerAnimationsManager : MonoBehaviour
     private void Update()
     {
         IniAnimatorParam();
+        OnOffParticlePodoshva();
     }
 
     /// <summary>
@@ -21,26 +25,28 @@ public class PlayerAnimationsManager : MonoBehaviour
     /// </summary>
     private void IniAnimatorParam()
     {
-        animator.SetFloat("Speed", Mathf.Abs(moveController.MoveX));
-        if (moveController.MoveX != 0)
+        animator.SetBool("IsMoveLeft", moveController.IsMoveLeft);
+        animator.SetBool("IsMoveRight", moveController.IsMoveRight);
+        animator.SetBool("IsMoveIdle", moveController.IsMoveIdle);
+    }
+
+    private void OnOffParticlePodoshva()
+    {
+        if (moveController.IsMoveRight)
         {
-            animator.SetFloat("Direction", moveController.MoveX);
+            particlePodoshva[0].SetActive(true);
         }
-        if (moveController.IsJumping)
+        else
         {
-            animator.SetBool("IsJumping", true);
+            particlePodoshva[0].SetActive(false);
         }
-        if (!moveController.IsJumping)
+        if (moveController.IsMoveLeft)
         {
-            animator.SetBool("IsJumping", false);
+            particlePodoshva[1].SetActive(true);
         }
-        if (moveController.IsGrounded)
+        else
         {
-            animator.SetBool("IsGrounded", true);
-        }
-        if (!moveController.IsGrounded)
-        {
-            animator.SetBool("IsGrounded", false);
+            particlePodoshva[1].SetActive(false);
         }
     }
 }
