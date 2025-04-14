@@ -41,10 +41,18 @@ public class MoveController : MonoBehaviour
         set { isMoveIdle = value; }
     }
 
+    private bool lockMove = false; //Флаг на блокировку движения
+    public bool LockMove
+    {
+        get { return lockMove; }
+        set { lockMove = value; }
+    }
+
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         playerInfo = GetComponent<PlayerInfo>();
+        lockMove = false;
     }
 
     private void Update()
@@ -73,7 +81,7 @@ public class MoveController : MonoBehaviour
     private void LeftAndRightMove()
     {
         MoveX = 1f;
-        if (rb != null && playerInfo != null)
+        if (rb != null && playerInfo != null && !playerInfo.IsDead && !lockMove)
         {
             if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
             {
@@ -95,16 +103,15 @@ public class MoveController : MonoBehaviour
                 isMoveLeft = false;
                 isMoveRight = false;
                 isMoveIdle = true;
-                Debug.Log("Персонаж остановился");
             }
         }
     }
 
     private void Jumping()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded == true)
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded == true && !playerInfo.IsDead)
         {
-            rb.AddForce(new Vector2(0, playerInfo.ForceJump), ForceMode2D.Impulse);
+            rb.AddForce(new Vector2(rb.linearVelocityX, playerInfo.ForceJump), ForceMode2D.Impulse);
         }
 
     }
@@ -118,6 +125,15 @@ public class MoveController : MonoBehaviour
         if (playerInfo == null)
         {
             Debug.LogError("Ошибка! playerInfo не найден!");
+        }
+
+        if (LockMove)
+        {
+            Debug.Log("Движение заблокировано: LockMove = true");
+        }
+        if (playerInfo.IsDead)
+        {
+            Debug.Log("Движение заблокировано: игрок мёртв");
         }
     }
 }

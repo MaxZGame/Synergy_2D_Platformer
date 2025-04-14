@@ -8,8 +8,6 @@ public class VisualInfo : MonoBehaviour
     private TextMeshProUGUI moneyText;//Число монет в кошельке (текст)
 
     [SerializeField]
-    private Slider healthPlayerSlider; //Слайдер здоровья над игроком
-    [SerializeField]
     private TextMeshProUGUI healthText;//Число здоровья (текст)
 
     //Подключаем объект игрока для доступа к PlayerInfo
@@ -39,7 +37,6 @@ public class VisualInfo : MonoBehaviour
     private void UpdateUI()
     {
         moneyText.text = "" + playerInfo.Money;
-        healthPlayerSlider.value = playerInfo.Health;
         healthText.text = "" + playerInfo.Health;
         if (takeItem.IsBonusActive)
         {
@@ -59,9 +56,6 @@ public class VisualInfo : MonoBehaviour
         playerInfo = player.GetComponent<PlayerInfo>();
         takeItem = synergyBonus.GetComponent<TakeItem>();
 
-        //Задаем мин и макс значения для слайдера
-        healthPlayerSlider.minValue = 0;
-        healthPlayerSlider.maxValue = 100;
 
         if (bonusActiveText.activeSelf == true)
         {
@@ -78,10 +72,6 @@ public class VisualInfo : MonoBehaviour
         if (playerInfo == null)
         {
             Debug.LogError("Ошибка! Объект playerInfo не найден!");
-        }
-        if (healthPlayerSlider == null)
-        {
-            Debug.LogError("Ошибка! Объект healthPlayerSlider не найден!");
         }
         if (moneyText == null)
         {

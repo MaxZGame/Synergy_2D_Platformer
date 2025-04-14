@@ -9,15 +9,22 @@ public class PlayerAnimationsManager : MonoBehaviour
     [SerializeField]
     private GameObject[] particlePodoshva = new GameObject[2];
 
+    //Подключаю игрока и его компоненты
+    [SerializeField]
+    private GameObject player;
+    private PlayerInfo playerInfo;
+
     private void Start()
     {
         animator = GetComponent<Animator>();
+        playerInfo = player.GetComponent<PlayerInfo>();
     }
 
     private void Update()
     {
         IniAnimatorParam();
         OnOffParticlePodoshva();
+        Errors();
     }
 
     /// <summary>
@@ -25,9 +32,12 @@ public class PlayerAnimationsManager : MonoBehaviour
     /// </summary>
     private void IniAnimatorParam()
     {
+        //Состояния передвижения
         animator.SetBool("IsMoveLeft", moveController.IsMoveLeft);
         animator.SetBool("IsMoveRight", moveController.IsMoveRight);
         animator.SetBool("IsMoveIdle", moveController.IsMoveIdle);
+        //Состояния персонажа
+        animator.SetBool("IsDead", playerInfo.IsDead);
     }
 
     private void OnOffParticlePodoshva()
@@ -47,6 +57,18 @@ public class PlayerAnimationsManager : MonoBehaviour
         else
         {
             particlePodoshva[1].SetActive(false);
+        }
+    }
+
+    private void Errors()
+    {
+        if (player == null)
+        {
+            Debug.LogError("Отсутствует player!");
+        }
+        if (playerInfo == null)
+        {
+            Debug.LogError("Отсутствует playerInfo!");
         }
     }
 }

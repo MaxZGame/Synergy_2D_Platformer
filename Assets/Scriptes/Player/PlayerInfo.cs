@@ -43,4 +43,31 @@ public class PlayerInfo : MonoBehaviour
         get { return money; }
         set { money = value; }
     }
+
+    //Состояния игрока
+    private bool isDead = false; //Мертвый или нет
+    public bool IsDead
+    {
+        get { return isDead; }
+        set { isDead = value; }
+    }
+
+    private void Start()
+    {
+        isDead = false;
+        Money = 0;
+    }
+    private void Update()
+    {
+        CheckStatePlayer();
+    }
+
+    private void CheckStatePlayer()
+    {
+        if (Health <= 0)
+        {
+            IsDead = true;
+            Health = 0;
+        }
+    }
 }
