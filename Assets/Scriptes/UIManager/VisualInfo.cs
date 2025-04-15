@@ -23,6 +23,18 @@ public class VisualInfo : MonoBehaviour
     private GameObject synergyBonus;
     private TakeItem takeItem;
 
+    //Инфа по бочкам
+    [SerializeField]
+    private GameObject bochka_1;
+    [SerializeField]
+    private GameObject bochka_2;
+    [SerializeField]
+    private TextMeshProUGUI healthTextBochka_1;
+    [SerializeField]
+    private TextMeshProUGUI healthTextBochka_2;
+    private Enemy enemy_1;
+    private Enemy enemy_2;
+
     private void Start()
     {
         Activator();
@@ -38,12 +50,15 @@ public class VisualInfo : MonoBehaviour
     {
         moneyText.text = "" + playerInfo.Money;
         healthText.text = "" + playerInfo.Health;
+        healthTextBochka_1.text = "" + enemy_1.Health;
+        healthTextBochka_2.text = "" + enemy_2.Health;
         if (takeItem.IsBonusActive)
         {
             bonusActiveText.SetActive(true);
             //Задаю положение текста об активации бонуса
             bonusActiveText.transform.position = new Vector2(83, 2);
         }
+
     }
 
     /// <summary>
@@ -55,7 +70,8 @@ public class VisualInfo : MonoBehaviour
         player = GameObject.Find("PLAYER");
         playerInfo = player.GetComponent<PlayerInfo>();
         takeItem = synergyBonus.GetComponent<TakeItem>();
-
+        enemy_1 = bochka_1.GetComponent<Enemy>();
+        enemy_2 = bochka_2.GetComponent<Enemy>();
 
         if (bonusActiveText.activeSelf == true)
         {
@@ -77,6 +93,10 @@ public class VisualInfo : MonoBehaviour
         {
             Debug.LogError("Ошибка! Объект moneyText не найден!");
         }
+        if (healthText == null)
+        {
+            Debug.LogError("Ошибка! Объект healthText не найден!");
+        }
         if (bonusActiveText == null)
         {
             Debug.LogError("Ошибка! Объект bonusActiveText не найден!");
@@ -88,6 +108,30 @@ public class VisualInfo : MonoBehaviour
         if (takeItem == null)
         {
             Debug.LogError("Ошибка! Объект takeItem не найден!");
+        }
+        if (bochka_1 == null)
+        {
+            Debug.LogError("Ошибка! Объект bochka_1 не найден!");
+        }
+        if (bochka_2 == null)
+        {
+            Debug.LogError("Ошибка! Объект bochka_2 не найден!");
+        }
+        if (healthTextBochka_1 == null)
+        {
+            Debug.LogError("Ошибка! Объект healthTextBochka_1 не найден!");
+        }
+        if (healthTextBochka_2 == null)
+        {
+            Debug.LogError("Ошибка! Объект healthTextBochka_2 не найден!");
+        }
+        if (enemy_1 == null)
+        {
+            Debug.LogError("Ошибка! Объект enemy_1 не найден!");
+        }
+        if (enemy_2 == null)
+        {
+            Debug.LogError("Ошибка! Объект enemy_2 не найден!");
         }
     }
 }

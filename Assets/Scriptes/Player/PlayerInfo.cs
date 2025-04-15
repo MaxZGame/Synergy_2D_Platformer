@@ -37,6 +37,7 @@ public class PlayerInfo : MonoBehaviour
         get { return bonusForceJump; }
         set { bonusForceJump = value; }
     }
+    [SerializeField]
     private int money = 0;//Количество монет
     public int Money
     {

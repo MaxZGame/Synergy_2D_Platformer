@@ -40,6 +40,7 @@ public class MoveController : MonoBehaviour
         get { return isMoveIdle; }
         set { isMoveIdle = value; }
     }
+    private bool isMoving = false;
 
     private bool lockMove = false; //Флаг на блокировку движения
     public bool LockMove
@@ -48,11 +49,24 @@ public class MoveController : MonoBehaviour
         set { lockMove = value; }
     }
 
+    //Работа со звуками
+    [SerializeField]
+    private GameObject audioManagerObj;
+    private AudioManager audioManager;
+    [SerializeField]
+    private float stepIntervalZvuk = 0.5f;
+    [SerializeField]
+    private float stepTimerZvuk = 0f;
+
+    private bool isDeadZvuk = false;
+
+
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         playerInfo = GetComponent<PlayerInfo>();
         lockMove = false;
+        audioManager = audioManagerObj.GetComponent<AudioManager>();
     }
 
     private void Update()
@@ -60,6 +74,7 @@ public class MoveController : MonoBehaviour
         Errors();
         LeftAndRightMove();
         Jumping();
+        UpdateMoveZvuk();
     }
 
     private void OnCollisionStay2D(Collision2D collision)
@@ -81,7 +96,7 @@ public class MoveController : MonoBehaviour
     private void LeftAndRightMove()
     {
         MoveX = 1f;
-        if (rb != null && playerInfo != null && !playerInfo.IsDead && !lockMove)
+        if (rb != null && playerInfo != null && !playerInfo.IsDead && !lockMove && !audioManager.IsFinal)
         {
             if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
             {
@@ -89,6 +104,7 @@ public class MoveController : MonoBehaviour
                 isMoveLeft = true;
                 isMoveRight = false;
                 isMoveIdle = false;
+                isMoving = true;
             }
             else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
             {
@@ -96,6 +112,7 @@ public class MoveController : MonoBehaviour
                 isMoveLeft = false;
                 isMoveRight = true;
                 isMoveIdle = false;
+                isMoving = true;
             }
             else
             {
@@ -103,17 +120,45 @@ public class MoveController : MonoBehaviour
                 isMoveLeft = false;
                 isMoveRight = false;
                 isMoveIdle = true;
+                isMoving = false;
             }
         }
     }
 
     private void Jumping()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded == true && !playerInfo.IsDead)
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded == true && !playerInfo.IsDead && !lockMove)
         {
             rb.AddForce(new Vector2(rb.linearVelocityX, playerInfo.ForceJump), ForceMode2D.Impulse);
+            audioManager.PlayJumpSound();
+            isMoving = false;
         }
 
+    }
+
+    private void UpdateMoveZvuk()
+    {
+        if (isMoving && IsGrounded && !lockMove)
+        {
+            stepTimerZvuk += Time.deltaTime;
+            if (stepTimerZvuk >= stepIntervalZvuk)
+            {
+                audioManager.PlayMoveSound();
+                stepTimerZvuk = 0f; // Сбрасываем таймер
+            }
+        }
+        else
+        {
+            stepTimerZvuk = stepIntervalZvuk;
+        }
+        if (playerInfo.IsDead)
+        {
+            if (!isDeadZvuk)
+            {
+                audioManager.PlayDeadSound();
+                isDeadZvuk = true;
+            }
+        }
     }
 
     private void Errors()
@@ -125,15 +170,6 @@ public class MoveController : MonoBehaviour
         if (playerInfo == null)
         {
             Debug.LogError("Ошибка! playerInfo не найден!");
-        }
-
-        if (LockMove)
-        {
-            Debug.Log("Движение заблокировано: LockMove = true");
-        }
-        if (playerInfo.IsDead)
-        {
-            Debug.Log("Движение заблокировано: игрок мёртв");
         }
     }
 }

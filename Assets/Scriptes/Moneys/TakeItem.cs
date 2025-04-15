@@ -7,11 +7,24 @@ public class TakeItem : MonoBehaviour
     private bool isBonusActive = false;
     public bool IsBonusActive
     {
-        get {  return isBonusActive; }
+        get { return isBonusActive; }
     }
+
+    //Подключаем звук
+    private GameObject audioManagerObj;
+    private AudioManager audioManager;
+
+    //Для анимации иконки
+    private GameObject moneyIcon;
+    private AnimationsMoney animationsMoney;
 
     private void Start()
     {
+        moneyIcon = GameObject.FindWithTag("UIMoney");
+        animationsMoney = moneyIcon.GetComponent<AnimationsMoney>();
+
+        audioManagerObj = GameObject.FindWithTag("AudioManager");
+        audioManager = audioManagerObj.GetComponent<AudioManager>();
         player = GameObject.FindWithTag("Player");
         if (player != null)
         {
@@ -37,7 +50,9 @@ public class TakeItem : MonoBehaviour
                 Destroy(this.gameObject);
                 if (playerInfo != null)
                 {
+                    audioManager.PlayMoneyZvuk();
                     playerInfo.Money += 1;
+                    animationsMoney.PlayTakeAnimation();
                     Debug.Log("Количество монет: " + playerInfo.Money);
                 }
             }
@@ -46,14 +61,32 @@ public class TakeItem : MonoBehaviour
         {
             if (collision.CompareTag("Player"))
             {
-                this.gameObject.SetActive (false);
+                this.gameObject.SetActive(false);
                 if (playerInfo != null)
                 {
                     playerInfo.ForceJump *= playerInfo.BonusForceJump;
                     isBonusActive = true;
+                    audioManager.PlayBonusTake();
                     Debug.Log("Бонус прыжка активирован");
                 }
             }
+        }
+    }
+
+    private void Update()
+    {
+        Errors();
+    }
+
+    private void Errors()
+    {
+        if (player == null)
+        {
+            Debug.LogError("Отсутствует player!");
+        }
+        if (playerInfo == null)
+        {
+            Debug.LogError("Отсутствует playerInfo!");
         }
     }
 }

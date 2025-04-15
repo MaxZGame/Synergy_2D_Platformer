@@ -7,6 +7,8 @@ TagManager:
   - Money
   - SynergyBonus
   - Enemy
+  - AudioManager
+  - UIMoney
   layers:
   - Default
   - TransparentFX

@@ -33,9 +33,12 @@ public class PlayerAnimationsManager : MonoBehaviour
     private void IniAnimatorParam()
     {
         //Состояния передвижения
-        animator.SetBool("IsMoveLeft", moveController.IsMoveLeft);
-        animator.SetBool("IsMoveRight", moveController.IsMoveRight);
-        animator.SetBool("IsMoveIdle", moveController.IsMoveIdle);
+        if (!moveController.LockMove)
+        {
+            animator.SetBool("IsMoveLeft", moveController.IsMoveLeft);
+            animator.SetBool("IsMoveRight", moveController.IsMoveRight);
+            animator.SetBool("IsMoveIdle", moveController.IsMoveIdle);
+        }
         //Состояния персонажа
         animator.SetBool("IsDead", playerInfo.IsDead);
     }
@@ -62,6 +65,29 @@ public class PlayerAnimationsManager : MonoBehaviour
 
     private void Errors()
     {
+        if (animator == null)
+        {
+            Debug.LogError("Отсутствует animator!");
+        }
+        if (moveController == null)
+        {
+            Debug.LogError("Отсутствует moveController!");
+        }
+        if (particlePodoshva == null)
+        {
+            Debug.LogError("Отсутствует particlePodoshva!");
+        }
+        else
+        {
+            if (particlePodoshva[0] == null)
+            {
+                Debug.LogError("Отсутствует particlePodoshva[0]!");
+            }
+            if (particlePodoshva[1] == null)
+            {
+                Debug.LogError("Отсутствует particlePodoshva[1]!");
+            }
+        }
         if (player == null)
         {
             Debug.LogError("Отсутствует player!");
